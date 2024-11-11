@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préstamos Pendientes de Devolución</title>
+</head>
+<body>
+    <h1>Préstamos Pendientes de Devolución</h1>
+
+    {{#if prestamos.length}}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID Préstamo</th>
+                    <th>ID Libro</th>
+                    <th>ID Cliente</th></th>
+                    <th>Fecha Solicitud</th>
+                    <th>Fecha Devolución</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each prestamos}}
+                    <tr>
+                        <td>{{this.id_prestamo}}</td>
+                        <td>{{this.id_libro}}</td>
+                        <td>{{this.id_cliente}}</td>
+                        <td>{{this.fecha_solicitud}}</td>
+                        <td>{{this.fecha_devolucion}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <p>No hay préstamos pendientes de devolución.</p>
+    {{/if}}
+</body>
+</html>
+

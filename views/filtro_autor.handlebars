@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtro por Autor</title>
+</head>
+<body>
+    <h1>Filtrar Libros por Autor</h1>
+
+    <!-- Formulario para ingresar el nombre del autor -->
+    <form action="/filtro_autor" method="POST">
+        <label for="autor">Nombre del Autor:</label>
+        <input type="text" id="autor" name="autor" value="{{autor}}" required>
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <!-- Mostrar resultados si existen -->
+    {{#if libros}}
+        <h2>Resultados para el Autor: "{{autor}}"</h2>
+        
+        {{#if libros.length}}
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID Libro</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Editorial</th>
+                        <th>Páginas</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each libros}}
+                        <tr>
+                            <td>{{this.id_libro}}</td>
+                            <td>{{this.titulo}}</td>
+                            <td>{{this.autor_nombre}}</td>
+                            <td>{{this.editorial_nombre}}</td>
+                            <td>{{this.paginas}}</td>
+                            <td>{{this.cantidad}}</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        {{else}}
+            <p>No se encontraron libros para el autor "{{autor}}".</p>
+        {{/if}}
+    {{/if}}
+</body>
+</html>
+

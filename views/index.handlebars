@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a la biblioteca</title>
+</head>
+<body>
+    <h1>Bienvenido a la biblioteca</h1>
+
+    <form action="/prestamo" method="POST">
+        <p> ID libro: <input type="text" name="id_libro" required></p>
+        <p> ID cliente: <input type="text" name="id_cliente" required></p>
+        <p> Fecha solicitud: <input type="text" name="fecha_solicitud" required></p>
+        <p> Fecha devolución: <input type="text" name="fecha_devolucion" required></p>
+        <input type="submit" value="Guardar">
+    </form>
+</body>
+</html>
