@@ -99,7 +99,7 @@ app.post('/filtro_editorial', async (req, res) => {
           JOIN ejemplares j ON l.id_libro = j.id_libro
           JOIN autor a ON l.id_autor = a.id_autor
           JOIN editorial e ON l.id_editorial = e.id_editorial
-          WHERE e.nombre = ${editorial}
+          WHERE e.nombre ILIKE ${editorial}
       `;
 
       
@@ -123,7 +123,7 @@ app.post('/filtro_autor', async (req, res) => {
           JOIN ejemplares j ON l.id_libro = j.id_libro
           JOIN autor a ON l.id_autor = a.id_autor
           JOIN editorial e ON l.id_editorial = e.id_editorial
-          WHERE a.nombre = ${autor}
+          WHERE a.nombre ILIKE ${autor}
       `;
 
       
@@ -147,7 +147,7 @@ app.post('/filtro_nombrelibro', async (req, res) => {
           JOIN ejemplares j ON l.id_libro = j.id_libro
           JOIN autor a ON l.id_autor = a.id_autor
           JOIN editorial e ON l.id_editorial = e.id_editorial
-          WHERE l.titulo = ${titulo}
+          WHERE l.titulo ILIKE ${titulo}
       `;
 
       
