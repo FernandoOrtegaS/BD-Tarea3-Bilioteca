@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Devolución de Préstamo</title>
+</head>
+<style>
+    /* Estilo para centrar el encabezado */
+h1 {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Estilo para el formulario */
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* Estilo para los labels */
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #555;
+    font-weight: bold;
+}
+
+/* Estilo para los inputs */
+form input[type="text"],
+form input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+/* Estilo para el botón */
+form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+form button:hover {
+    background-color: #0056b3;
+    transform: scale(1.02);
+}
+</style>
+<body>
+    <h1>Registrar Devolución de Préstamo</h1>
+    <form action="/devolucion_prestamo" method="POST">
+        <label for="id_prestamo">ID del Préstamo:</label>
+        <input type="text" id="id_prestamo" name="id_prestamo" required>
+
+        <label for="id_libro">ID del Libro:</label>
+        <input type="text" id="id_libro" name="id_libro" required>
+        
+        <label for="id_cliente">ID del Cliente:</label>
+        <input type="text" id="id_cliente" name="id_cliente" required>
+
+        <label for="fecha_solicitud">Fecha de Solicitud:</label>
+        <input type="date" id="fecha_solicitud" name="fecha_solicitud" required>
+        
+        <label for="fecha_devolucion">Fecha de Devolución:</label>
+        <input type="date" id="fecha_devolucion" name="fecha_devolucion" required>
+
+        <button type="submit">Registrar Devolución</button>
+    </form>
+</body>
+</html>

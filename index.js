@@ -24,9 +24,17 @@ app.get('/', async (req, res) => {
 
 app.post('/prestamo', async (req, res) => {
     const { id_libro, id_cliente, fecha_solicitud, fecha_devolucion } = req.body;
+    const cantidad = req.body.cantidad;
 
     try {
-       
+        const [ejemplar] = await sql`
+            SELECT cantidad FROM ejemplares WHERE id_libro = ${id_libro}
+        `;
+
+        if (ejemplar.cantidad <= 0) {
+            return res.send('No hay ejemplares disponibles');
+        }
+
         const result = await sql`
             INSERT INTO prestamo (id_libro, id_cliente, fecha_solicitud, fecha_devolucion)
             VALUES (${id_libro}, ${id_cliente}, ${fecha_solicitud}, ${fecha_devolucion})
@@ -36,6 +44,11 @@ app.post('/prestamo', async (req, res) => {
         const [cliente] = await sql`SELECT nombre FROM cliente WHERE id_cliente = ${id_cliente}`;
         const [libro] = await sql`SELECT titulo FROM libro WHERE id_libro = ${id_libro}`;
 
+        await sql` 
+            UPDATE ejemplares
+            SET cantidad = cantidad - 1
+            WHERE id_libro = ${id_libro} AND cantidad > 0;
+        `;
         
         res.render('prestamo_exito', {
             cliente: cliente.nombre,
@@ -91,24 +104,26 @@ app.get('/filtro_editorial', (req, res) => {
 });
 
 app.post('/filtro_editorial', async (req, res) => {
-  const { editorial } = req.body;
-  try {
-      const result = await sql`
-          SELECT l.*, j.cantidad, l.paginas, a.nombre AS autor_nombre, e.nombre AS editorial_nombre
-          FROM libro l
-          JOIN ejemplares j ON l.id_libro = j.id_libro
-          JOIN autor a ON l.id_autor = a.id_autor
-          JOIN editorial e ON l.id_editorial = e.id_editorial
-          WHERE e.nombre ILIKE ${editorial}
-      `;
-
-      
-      res.render('filtro_editorial', { libros: result, editorial });
-  } catch (err) {
-      console.error('Error al filtrar libros por editorial', err);
-      res.status(500).send('Error al filtrar libros por editorial');
-  }
-});
+    const { editorial } = req.body; // Obtenemos la editorial desde el formulario
+    try {
+        // Consulta para filtrar libros según la editorial
+        const result = await sql`
+            SELECT l.*, j.cantidad, l.paginas, a.nombre AS autor_nombre, e.nombre AS editorial_nombre
+            FROM libro l
+            JOIN ejemplares j ON l.id_libro = j.id_libro
+            JOIN autor a ON l.id_autor = a.id_autor
+            JOIN editorial e ON l.id_editorial = e.id_editorial
+            WHERE e.nombre ILIKE ${editorial}
+        `;
+  
+        // Renderizamos los resultados
+        res.render('filtro_editorial', { libros: result, editorial });
+    } catch (err) {
+        console.error('Error al filtrar libros por editorial:', err);
+        res.status(500).send('Error al filtrar libros por editorial');
+    }
+  });
+  
 
 app.get('/filtro_autor', (req, res) => {
   res.render('filtro_autor', { libros: null, autor: '' });
@@ -158,8 +173,34 @@ app.post('/filtro_nombrelibro', async (req, res) => {
   }
 });
 
+app.get('/devolucion', async (req, res) => {
+  res.render('devolucion');
+});
 
-const port = process.env.PORT || 3028;
+app.post('/devolucion_prestamo', async (req, res) => {
+    const { id_libro, id_cliente, fecha_solicitud,id_prestamo,fecha_devolucion } = req.body;
+try {
+const result = await sql`
+UPDATE prestamo
+SET fecha_devolucion = ${fecha_devolucion}
+WHERE id_libro = ${id_libro} AND id_cliente = ${id_cliente} AND fecha_solicitud = ${fecha_solicitud} AND fecha_devolucion IS NULL AND id_prestamo = ${id_prestamo}
+`;
+await sql` 
+            UPDATE ejemplares
+            SET cantidad = cantidad + 1
+            WHERE id_libro = ${id_libro} AND cantidad > 0;
+        `;
+res.render('devolucion_exito');
+} catch (err) {
+console.error('Error al realizar la devolucion', err);
+res.status(500).send('Error al realizar la devolucion');
+}
+});
+
+
+
+
+const port = process.env.PORT || 3002;
 app.listen(port, () => console.log(`Servidor corriendo en el puerto ${port}`));
 
 

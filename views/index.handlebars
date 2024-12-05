@@ -5,9 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenido a la biblioteca</title>
 </head>
-<body>
-    <h1>Bienvenido a la biblioteca</h1>
+<style>
+    /* Estilo para centrar el encabezado */
+h1 {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
 
+/* Estilo para el formulario */
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+form p {
+    margin-bottom: 15px;
+    font-family: Arial, sans-serif;
+    color: #555;
+}
+
+form input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+form input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+</style>
+<body>
+    <div>
+    <h1>Bienvenido a la biblioteca</h1>
+</div>
     <form action="/prestamo" method="POST">
         <p> ID libro: <input type="text" name="id_libro" required></p>
         <p> ID cliente: <input type="text" name="id_cliente" required></p>
