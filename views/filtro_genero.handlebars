@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtrar Préstamos por Género</title>
+</head>
+<body>
+    <h1>Filtrar Préstamos por Género</h1>
+
+    
+    <form action="/filtro_genero" method="POST">
+        <label for="genero">Género:</label>
+        <input type="text" id="genero" name="genero" value="{{genero}}" required>
+        <button type="submit">Filtrar</button>
+    </form>
+
+   
+    {{#if prestamos}}
+        <h2>Resultados para el género: "{{genero}}"</h2>
+        
+        {{#if prestamos.length}}
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID Préstamo</th>
+                        <th>Cliente</th>
+                        <th>Cargo</th>
+                        <th>Fecha Solicitud</th>
+                        <th>Fecha Devolución</th>
+                        <th>Género</th>
+                        <th>Curso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each prestamos}}
+                        <tr>
+                            <td>{{this.id_prestamo}}</td>
+                            <td>{{this.nombre}}</td>
+                            <td>{{this.cargo}}</td>
+                            <td>{{limitYear this.fecha_solicitud}}</td>
+                            <td>{{limitYear this.fecha_devolucion}}</td>
+                            <td>{{this.genero}}</td>
+                            <td>{{this.curso}}</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        {{else}}
+            <p>No se encontraron préstamos para el género "{{genero}}".</p>
+        {{/if}}
+    {{/if}}
+</body>
+</html>

@@ -8,14 +8,14 @@
 <body>
     <h1>Filtrar Libros por Título</h1>
 
-    <!-- Formulario para ingresar el título del libro -->
+   
     <form action="/filtro_nombrelibro" method="POST">
         <label for="titulo">Título del Libro:</label>
         <input type="text" id="titulo" name="titulo" value="{{titulo}}" required>
         <button type="submit">Filtrar</button>
     </form>
 
-    <!-- Mostrar resultados si existen -->
+   
     {{#if libros}}
         <h2>Resultados para el Título: "{{titulo}}"</h2>
         
@@ -28,6 +28,7 @@
                         <th>Autor</th>
                         <th>Editorial</th>
                         <th>Páginas</th>
+                        <th>Genero</th>
                         <th>Cantidad</th>
                     </tr>
                 </thead>
@@ -39,6 +40,7 @@
                             <td>{{this.autor_nombre}}</td>
                             <td>{{this.editorial_nombre}}</td>
                             <td>{{this.paginas}}</td>
+                            <td>{{this.nombre_genero}}</td>
                             <td>{{this.cantidad}}</td>
                         </tr>
                     {{/each}}

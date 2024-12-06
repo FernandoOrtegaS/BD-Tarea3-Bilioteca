@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filtro por Autor</title>
+    <title>Filtro por Sección</title>
 </head>
 <body>
-    <h1>Filtrar Libros por seccion</h1>
+    <h1>Filtrar Libros por Sección</h1>
 
-    <!-- Formulario para ingresar el nombre del autor -->
+    
     <form action="/filtro_seccion" method="POST">
-        <label for="autor">Nombre de la seccion:</label>
+        <label for="seccion">Nombre de la sección:</label>
         <input type="text" id="seccion" name="seccion" value="{{seccion}}" required>
         <button type="submit">Filtrar</button>
     </form>
 
-    <!-- Mostrar resultados si existen -->
+   
     {{#if libros}}
-        <h2>Resultados para la seccion: "{{seccion}}"</h2>
+        <h2>Resultados para la sección: "{{seccion}}"</h2>
         
         {{#if libros.length}}
             <table border="1">
@@ -28,6 +28,7 @@
                         <th>Autor</th>
                         <th>Editorial</th>
                         <th>Páginas</th>
+                        <th>Genero</th>
                         <th>Cantidad</th>
                     </tr>
                 </thead>
@@ -39,14 +40,16 @@
                             <td>{{this.autor_nombre}}</td>
                             <td>{{this.editorial_nombre}}</td>
                             <td>{{this.paginas}}</td>
+                            <td>{{this.nombre_genero}}</td>
                             <td>{{this.cantidad}}</td>
                         </tr>
                     {{/each}}
                 </tbody>
             </table>
         {{else}}
-            <p>No se encontraron libros para el autor "{{seccion}}".</p>
+            <p>No se encontraron libros para la sección "{{seccion}}".</p>
         {{/if}}
     {{/if}}
 </body>
 </html>
+

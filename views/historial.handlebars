@@ -1,77 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Historial de Préstamos</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f9f9f9;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
-    table, th, td {
-      border: 1px solid #ddd;
-    }
-    th, td {
-      padding: 10px;
-      text-align: left;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    p {
-      text-align: center;
-      color: #555;
-    }
-    .no-data {
-      text-align: center;
-      font-size: 1.2em;
-      color: #888;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Préstamos</title>
 </head>
 <body>
-  <h1>Historial de Préstamos</h1>
+    <h1>Historial de Préstamos</h1>
 
-  {{#if historial.length}}
-    <table>
-      <thead>
-        <tr>
-          <th>ID Préstamo</th>
-          <th>Cliente</th>
-          <th>Cargo</th>
-          <th>Fecha de Solicitud</th>
-          <th>Fecha de Devolución</th>
-          <th>Género</th>
-          <th>Curso</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each historial}}
-          <tr>
-            <td>{{this.id_prestamo}}</td>
-            <td>{{this.nombre}}</td>
-            <td>{{this.cargo}}</td>
-            <td>{{this.fecha_solicitud}}</td>
-            <td>{{this.fecha_devolucion}}</td>
-            <td>{{this.genero}}</td>
-            <td>{{this.curso}}</td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-  {{else}}
-    <p class="no-data">No hay datos disponibles para mostrar.</p>
-  {{/if}}
+    <button><a href="/">Volver</a></button>
+    <button><a href="/filtro_cargo">Filtrar por cargo</a></button>
+    <button><a href="/filtro_genero">Filtrar género</a></button>
+    <button><a href="/filtro_curso">Filtrar por curso</a></button>
+
+    {{#if historial.length}}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID Préstamo</th>
+                    <th>Cliente</th>
+                    <th>Cargo</th>
+                    <th>Fecha de Solicitud</th>
+                    <th>Fecha de Devolución</th>
+                    <th>Género</th>
+                    <th>Curso</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each historial}}
+                    <tr>
+                        <td>{{this.id_prestamo}}</td>
+                        <td>{{this.nombre}}</td>
+                        <td>{{this.cargo}}</td>
+                        <td>{{limitYear this.fecha_solicitud}}</td>
+                        <td>{{limitYear this.fecha_devolucion}}</td>
+                        <td>{{this.genero}}</td>
+                        <td>{{this.curso}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <p class="no-data">No hay datos disponibles para mostrar.</p>
+    {{/if}}
 </body>
 </html>
