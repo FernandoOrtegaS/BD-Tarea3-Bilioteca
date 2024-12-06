@@ -3,15 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filtro por Editorial</title>
+    <title>Filtro por Autor</title>
 </head>
 <body>
-    <h1>Catalogo</h1>
-    <button> <a href="/"> volver </a></button>
-<button> <a href="/filtro_editorial"> filtrar por editorial </a></button>
-<button> <a href="/filtro_autor"> filtrar por autor </a></button>
-<button> <a href="/filtro_nombrelibro"> filtrar por titulo </a></button>
-<button> <a href="/filtro_seccion"> filtrar por seccion </a></button>
+    <h1>Filtrar Libros por seccion</h1>
+
+    <!-- Formulario para ingresar el nombre del autor -->
+    <form action="/filtro_seccion" method="POST">
+        <label for="autor">Nombre de la seccion:</label>
+        <input type="text" id="seccion" name="seccion" value="{{seccion}}" required>
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <!-- Mostrar resultados si existen -->
+    {{#if libros}}
+        <h2>Resultados para la seccion: "{{seccion}}"</h2>
         
         {{#if libros.length}}
             <table border="1">
@@ -20,10 +26,9 @@
                         <th>ID Libro</th>
                         <th>Título</th>
                         <th>Autor</th>
-                        <th>editorial </th>
+                        <th>Editorial</th>
                         <th>Páginas</th>
                         <th>Cantidad</th>
-                        <th>Sección</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,15 +36,17 @@
                         <tr>
                             <td>{{this.id_libro}}</td>
                             <td>{{this.titulo}}</td>
-                            <td>{{this.nombre}}</td>
+                            <td>{{this.autor_nombre}}</td>
                             <td>{{this.editorial_nombre}}</td>
                             <td>{{this.paginas}}</td>
                             <td>{{this.cantidad}}</td>
-                            <td>{{this.seccion_nombre}}</td>
                         </tr>
                     {{/each}}
                 </tbody>
             </table>
+        {{else}}
+            <p>No se encontraron libros para el autor "{{seccion}}".</p>
+        {{/if}}
     {{/if}}
 </body>
 </html>

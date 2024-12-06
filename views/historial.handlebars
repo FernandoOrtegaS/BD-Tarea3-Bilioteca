@@ -33,33 +33,45 @@
       text-align: center;
       color: #555;
     }
+    .no-data {
+      text-align: center;
+      font-size: 1.2em;
+      color: #888;
+    }
   </style>
 </head>
 <body>
   <h1>Historial de Préstamos</h1>
 
-  
+  {{#if historial.length}}
     <table>
       <thead>
         <tr>
           <th>ID Préstamo</th>
           <th>Cliente</th>
           <th>Cargo</th>
-          <th>Monto</th>
           <th>Fecha de Solicitud</th>
+          <th>Fecha de Devolución</th>
+          <th>Género</th>
+          <th>Curso</th>
         </tr>
       </thead>
       <tbody>
         {{#each historial}}
           <tr>
             <td>{{this.id_prestamo}}</td>
-            <td>{{this.id_libro}}</td>
-            <td>{{this.id_cliente}}</td>
+            <td>{{this.nombre}}</td>
+            <td>{{this.cargo}}</td>
+            <td>{{this.fecha_solicitud}}</td>
+            <td>{{this.fecha_devolucion}}</td>
+            <td>{{this.genero}}</td>
+            <td>{{this.curso}}</td>
           </tr>
         {{/each}}
       </tbody>
     </table>
+  {{else}}
+    <p class="no-data">No hay datos disponibles para mostrar.</p>
+  {{/if}}
 </body>
 </html>
-
-

@@ -23,8 +23,25 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/historial', async (req, res) => {
-    res.render('historial');
-  })
+    try {
+        const result = await sql`
+            SELECT prestamo.id_prestamo, cliente.id_cliente, cliente.nombre, cargo.nombre as cargo, prestamo.fecha_solicitud, prestamo.fecha_devolucion, cliente.genero, curso.nombre as curso
+FROM prestamo
+JOIN cliente ON prestamo.id_cliente = cliente.id_cliente
+JOIN cargo ON cargo.id_cargo = cliente.id_cargo
+LEFT JOIN esta_cursando ON esta_cursando.id_cliente = cliente.id_cliente
+LEFT JOIN curso ON esta_cursando.id_curso = curso.id_curso
+WHERE prestamo.fecha_devolucion IS NOT NULL;
+        `;
+         
+        res.render('historial', { historial: result });
+    } catch (err) {
+        console.error('Error al obtener el historial', err);
+        res.status(500).send('Error al obtener el historial');
+    }
+});
+
+  
 
 app.post('/prestamo', async (req, res) => {
     const { id_libro, id_cliente, fecha_solicitud, fecha_devolucion } = req.body;
@@ -89,11 +106,13 @@ app.get('/prestamos_no_devueltos', async (req, res) => {
 app.get('/catalogo', async (req, res) => {
   try{
       const result = await sql`
-      select l.* , j.cantidad , e.nombre as editorial_nombre ,l.paginas , a.nombre
+      select l.* , j.cantidad ,se.nombre as seccion_nombre, e.nombre as editorial_nombre ,l.paginas , a.nombre
       from libro l
       join ejemplares j ON l.id_libro = j.id_libro
       Join autor a ON l.id_autor = a.id_autor
       join editorial e on l.id_editorial = e.id_editorial
+      join se_ubica s on l.id_libro = s.id_libro
+      join seccion se on s.id_seccion = se.id_seccion
       `;
       
       res.render('catalogo', { libros: result });
@@ -103,6 +122,31 @@ app.get('/catalogo', async (req, res) => {
 }
 
 });
+
+app.get('/filtro_seccion', (req, res) => {
+  res.render('filtro_seccion' , { libros: null, seccion: '' });
+})
+
+
+app.post('/filtro_seccion', async (req, res) => {
+    const { seccion } = req.body;
+    try {
+        const result = await sql`
+            SELECT l.*, j.cantidad, l.paginas, a.nombre AS autor_nombre, e.nombre AS editorial_nombre
+            FROM libro l
+            JOIN ejemplares j ON l.id_libro = j.id_libro
+            JOIN autor a ON l.id_autor = a.id_autor
+            JOIN editorial e ON l.id_editorial = e.id_editorial
+            WHERE a.nombre ILIKE ${seccion}
+        `;
+  
+        
+        res.render('filtro_seccion', { libros: result, seccion });
+    } catch (err) {
+        console.error('Error al filtrar libros por seccion', err);
+        res.status(500).send('Error al filtrar libros por seccion');
+    }
+  });
 
 app.get('/filtro_editorial', (req, res) => {
   res.render('filtro_editorial', { libros: null, editorial: '' });
@@ -183,45 +227,57 @@ app.get('/devolucion', async (req, res) => {
 });
 
 app.post('/devolucion_prestamo', async (req, res) => {
-    const { id_libro, id_cliente, fecha_solicitud,id_prestamo,fecha_devolucion } = req.body;
-try {
-const result = await sql`
-UPDATE prestamo
-SET fecha_devolucion = ${fecha_devolucion}
-WHERE id_libro = ${id_libro} AND id_cliente = ${id_cliente} AND fecha_solicitud = ${fecha_solicitud} AND fecha_devolucion IS NULL AND id_prestamo = ${id_prestamo}
-`;
-await sql` 
+    const { id_libro, id_cliente, fecha_solicitud, id_prestamo, fecha_devolucion } = req.body;
+    try {
+        // Validamos si el préstamo existe
+        const prestamoExistente = await sql`
+            SELECT * FROM prestamo 
+            WHERE id_libro = ${id_libro} 
+            AND id_cliente = ${id_cliente} 
+            AND fecha_solicitud = ${fecha_solicitud} 
+            AND id_prestamo = ${id_prestamo} 
+            AND fecha_devolucion IS NULL
+        `;
+
+        if (prestamoExistente.length === 0) {
+            // Si no se encuentra el préstamo, enviamos un error
+            return res.status(400).send('No se encontró un préstamo que coincida con los parámetros proporcionados.');
+        }
+
+        // Actualizamos la fecha de devolución si el préstamo existe
+        await sql`
+            UPDATE prestamo
+            SET fecha_devolucion = ${fecha_devolucion}
+            WHERE id_libro = ${id_libro} 
+            AND id_cliente = ${id_cliente} 
+            AND fecha_solicitud = ${fecha_solicitud} 
+            AND id_prestamo = ${id_prestamo}
+            AND fecha_devolucion IS NULL
+        `;
+
+        // Actualizamos la cantidad de ejemplares
+        await sql` 
             UPDATE ejemplares
             SET cantidad = cantidad + 1
             WHERE id_libro = ${id_libro} AND cantidad > 0;
         `;
-res.render('devolucion_exito');
-} catch (err) {
-console.error('Error al realizar la devolucion', err);
-res.status(500).send('Error al realizar la devolucion');
-}
+
+        // Si todo va bien, redirigimos a la vista de devolución exitosa
+        res.render('devolucion_exito');
+
+    } catch (err) {
+        console.error('Error al realizar la devolución', err);
+        res.status(500).send('Error al realizar la devolución');
+    }
 });
 
 
-app.get('/historial', async (req, res) => {
-    try{
-        const result = await sql`
-        SELECT *
-        FROM prestamo
-    `;    
-        
-        res.render('historial', { historial: result });
-    }catch(err){
-        console.error('Error al obtener el historial', err);
-        res.status(500).send('Error al obtener el historial');
-  }
-  
-  });
-  
+
+
   
 
  
-const port = process.env.PORT || 3009;
+const port = process.env.PORT || 3027;
 app.listen(port, () => console.log(`Servidor corriendo en el puerto ${port}`));
 
 
