@@ -22,6 +22,10 @@ app.get('/', async (req, res) => {
     res.render('index');
 });
 
+app.get('/historial', async (req, res) => {
+    res.render('historial');
+  })
+
 app.post('/prestamo', async (req, res) => {
     const { id_libro, id_cliente, fecha_solicitud, fecha_devolucion } = req.body;
     const cantidad = req.body.cantidad;
@@ -85,10 +89,11 @@ app.get('/prestamos_no_devueltos', async (req, res) => {
 app.get('/catalogo', async (req, res) => {
   try{
       const result = await sql`
-      select l.* , j.cantidad , l.paginas , a.nombre
+      select l.* , j.cantidad , e.nombre as editorial_nombre ,l.paginas , a.nombre
       from libro l
       join ejemplares j ON l.id_libro = j.id_libro
       Join autor a ON l.id_autor = a.id_autor
+      join editorial e on l.id_editorial = e.id_editorial
       `;
       
       res.render('catalogo', { libros: result });
@@ -198,9 +203,25 @@ res.status(500).send('Error al realizar la devolucion');
 });
 
 
+app.get('/historial', async (req, res) => {
+    try{
+        const result = await sql`
+        SELECT *
+        FROM prestamo
+    `;    
+        
+        res.render('historial', { historial: result });
+    }catch(err){
+        console.error('Error al obtener el historial', err);
+        res.status(500).send('Error al obtener el historial');
+  }
+  
+  });
+  
+  
 
-
-const port = process.env.PORT || 3002;
+ 
+const port = process.env.PORT || 3009;
 app.listen(port, () => console.log(`Servidor corriendo en el puerto ${port}`));
 
 
